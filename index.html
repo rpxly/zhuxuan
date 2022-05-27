@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>I ❤ ZhuXuan</title>
+    <link rel="stylesheet" href="./css/lmx.css">
+
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            background-color: #000000;
+            margin: 0;
+            font-family: Helvetica, sans-serif;;
+            overflow: hidden;
+        }
+
+        a {
+            color: #ffffff;
+        }
+
+        /* #info {
+            position: absolute;
+            width: 100%;
+            color: #ffffff;
+            padding: 5px;
+            font-family: Monospace;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 1;
+        }
+
+        #menu {
+            position: absolute;
+            bottom: 40px;
+            width: 100%;
+            text-align: center;
+            font-family: verdana, Tahoma, Arial, Hei, "Microsoft Yahei", SimHei;
+        }
+
+        .element {
+            width: 120px;
+            height: 160px;
+            box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.5);
+            border: 1px solid rgba(127, 255, 255, 0.25);
+            text-align: center;
+            cursor: default;
+        }
+
+        .elementC {
+            width: 120px;
+            height: 160px;
+            box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.5);
+            border: 1px solid rgba(127, 255, 255, 0.25);
+            text-align: center;
+            cursor: default;
+        }
+
+        .element:hover {
+            box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.75);
+            border: 1px solid rgba(127, 255, 255, 0.75);
+        }
+
+        .element .number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 12px;
+            color: rgba(127, 255, 255, 0.75);
+        }
+
+        .element .symbol {
+            position: absolute;
+            top: 40px;
+            left: 0px;
+            right: 0px;
+            font-size: 60px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.75);
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.95);
+        }
+
+        .element .details {
+            position: absolute;
+            bottom: 15px;
+            left: 0px;
+            right: 0px;
+            font-size: 12px;
+            color: rgba(127, 255, 255, 0.75);
+        }
+
+        button {
+            color: rgba(127, 255, 255, 0.75);
+            background: transparent;
+            outline: 1px solid rgba(127, 255, 255, 0.75);
+            border: 0px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: rgba(0, 255, 255, 0.5);
+        }
+
+        button:active {
+            color: #000000;
+            background-color: rgba(0, 255, 255, 0.75);
+        }  */
+
+        /*  */
+        /* #bigImg {
+            position: absolute;
+            display: none;
+            height: 500px;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            margin: auto;
+            z-index: 10;
+        }
+*/
+        /* #showImg {
+            display: none;
+            width: 400px;
+            height: 500px;
+            background: red;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            left: 0;
+            z-index: 999;
+            right: 0;
+            transform-style: preserve-3d;
+            transform: scale3d(30deg);
+            transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+        }  */
+
+
+    </style>
+    <script type="text/javascript" src="./js/particle/three.min.js"></script>
+    <script type="text/javascript" src="./js/particle/dat.gui.min.js"></script>
+    <script type="text/javascript" src="./js/particle/Stats.min.js"></script>
+    <script type="text/javascript" src="./js/particle/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/particle/index.js"></script>
+    <!--  -->
+    <!-- <script src="js/card/three.min.js"></script> -->
+    <script src="js/card/tween.min.js"></script>
+    <script src="js/card/TrackballControls.js"></script>
+    <script src="js/card/CSS3DRenderer.js"></script>
+    <!-- <script src="js/card/jquery-3.1.1.js"></script> -->
+    <script src="js/card/index.js"></script>
+
+</head>
+
+<body>
+
+<div class="BG" id="bg">
+    <div id="Stats-output">
+    </div>
+    <div id="WebGL-output">
+    </div>
+</div>
+<div id="container"></div>
+<div id="menu">
+    <button id="table">表面</button>
+    <button id="sphere">球体</button>
+    <button id="helix">螺旋</button>
+    <button id="grid">网格</button>
+</div>
+<script>
+    Card.Init()
+    // 垂直于平面的:Z轴
+    function getmatrix(a, b, c, d, e, f) {
+        var aa = Math.round(180 * Math.asin(a) / Math.PI);
+        var bb = Math.round(180 * Math.acos(b) / Math.PI);
+        var cc = Math.round(180 * Math.asin(c) / Math.PI);
+        var dd = Math.round(180 * Math.acos(d) / Math.PI);
+        var deg = 0;
+        if (aa == bb || -aa == bb) {
+            deg = dd;
+        } else if (-aa + bb == 180) {
+            deg = 180 + cc;
+        } else if (aa + bb == 180) {
+            deg = 360 - cc || 360 - dd;
+        }
+        return deg >= 360 ? 0 : deg;
+        //return (aa+','+bb+','+cc+','+dd);
+    }
+
+    function getmatrix3d(a, b, c, d, e, f) {
+        var aa = Math.round(180 * Math.asin(a) / Math.PI);
+        var bb = Math.round(180 * Math.acos(b) / Math.PI);
+        var cc = Math.round(180 * Math.asin(c) / Math.PI);
+        var dd = Math.round(180 * Math.acos(d) / Math.PI);
+        var deg = 0;
+        if (aa == bb || -aa == bb) {
+            deg = dd;
+        } else if (-aa + bb == 180) {
+            deg = 180 + cc;
+        } else if (aa + bb == 180) {
+            deg = 360 - cc || 360 - dd;
+        }
+        return deg >= 360 ? 0 : deg;
+        //return (aa+','+bb+','+cc+','+dd);
+    }
+
+    // $('#cardBigBox').on('click', function () {
+    // 	//matrix3d(1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 960, -309, -2151.03, 1)
+    // 	console.log("3d:", $('#cardBox').css("transform"))
+    // 	var deg = eval('get' + $('#cardBox').css('transform'));//构造getmatrix函数,返回上次旋转度数
+    // 	var step = 45;//每次旋转多少度
+    // 	console.log("rotate:", deg)
+    // 	console.log("matrix:", $('.element').css('transform'))
+    // 	var edeg = eval('get' + $('.element').css('transform'));//构造getmatrix函数,返回上次旋转度数
+    // 	console.log("elementRotate:", edeg)
+    // 	console.log("x:", $('#cardBox').x)
+
+    // 	//rotateX(0deg) rotateY(90deg) rotateZ(0deg)
+
+    // 	// $('#cardBox').css({ 'transform': 'rotate(' + (deg + step) % 360 + 'deg)' });
+    // })
+</script>
+</body>
+
+</html>
